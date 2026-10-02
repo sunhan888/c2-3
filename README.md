@@ -6,7 +6,7 @@ SparkIdea AI는 사용자가 **학년, 관심사, 주제**를 입력하면 AI가
 
 ## 배포 URL
 
-- **Production:** Vercel 배포 후 이곳에 URL을 기록합니다.
+- **Production:** https://sparkidea-ai.vercel.app
 - **Repository:** https://github.com/sunhan888/c2-3
 
 ## 주요 기능
@@ -25,7 +25,7 @@ SparkIdea AI는 사용자가 **학년, 관심사, 주제**를 입력하면 AI가
 |---|---|
 | 프론트엔드 | HTML5, CSS3, Vanilla JavaScript |
 | 백엔드 | Python 3.12, Vercel Serverless Function (`api/generate_idea.py`) |
-| AI | OpenAI API (`gpt-5-mini` 기본값, 환경 변수로 변경 가능) |
+| AI | Gemini API (`gemini-3.5-flash-lite` 기본값, 환경 변수로 변경 가능) |
 | 배포 | Vercel |
 | 형상 관리 | GitHub |
 
@@ -64,12 +64,12 @@ python3 -m pip install -r requirements.txt
 
 ### 3. 환경 변수 설정
 
-프로젝트 루트에 `.env` 파일을 만들고 아래처럼 **본인의 OpenAI API 키를 로컬 환경에만** 설정합니다. `.env` 파일은 `.gitignore`에 포함되어 있어 GitHub에 올라가지 않습니다.
+프로젝트 루트에 `.env` 파일을 만들고 아래처럼 **본인의 Gemini API 키를 로컬 환경에만** 설정합니다. `.env` 파일은 `.gitignore`에 포함되어 있어 GitHub에 올라가지 않습니다.
 
 ```bash
-export OPENAI_API_KEY="your_api_key_here"
+export GEMINI_API_KEY="your_api_key_here"
 # 선택 사항: 모델을 바꾸고 싶을 때만 설정
-export OPENAI_MODEL="gpt-5-mini"
+export GEMINI_MODEL="gemini-3.5-flash-lite"
 ```
 
 > API 키를 소스 코드, README, Git 커밋, 스크린샷에 적지 마세요.
@@ -92,8 +92,8 @@ npm run dev
 
    | Key | Value | 적용 환경 |
    |---|---|---|
-   | `OPENAI_API_KEY` | 본인의 OpenAI API 키 | Production, Preview, Development 필요 범위 |
-   | `OPENAI_MODEL` | 선택 사항. 미설정 시 `gpt-5-mini` | 필요 시 |
+   | `GEMINI_API_KEY` | 본인의 Gemini API 키 | Production, Preview, Development 필요 범위 |
+   | `GEMINI_MODEL` | 선택 사항. 미설정 시 `gemini-3.5-flash-lite` | 필요 시 |
 
 5. **Deploy**를 누릅니다. Vercel은 루트의 정적 파일을 제공하고 `api/generate_idea.py`를 `/api/generate_idea` 함수로 배포합니다.
 6. 배포 URL에서 메뉴 이동, 모바일 화면, 정상 AI 결과, 빈 입력 안내를 모두 확인합니다.
@@ -104,9 +104,9 @@ npm run dev
 | 현상 | 먼저 확인할 내용 |
 |---|---|
 | `404 /api/generate_idea` | 저장소 루트에 `api/generate_idea.py`가 있는지, Vercel Root Directory가 올바른지 확인 |
-| `AI 서비스 설정이 아직 완료되지 않았습니다` | Vercel Project Settings → Environment Variables에 `OPENAI_API_KEY`가 있는지 확인 후 재배포 |
-| `502/503` 오류 | OpenAI 키의 유효성, 사용량 한도, Vercel Function 로그 확인 |
-| 응답이 늦음 | 잠시 후 재시도하고, OpenAI API 상태와 네트워크 확인 |
+| `AI 서비스 설정이 아직 완료되지 않았습니다` | Vercel Project Settings → Environment Variables에 `GEMINI_API_KEY`가 있는지 확인 후 재배포 |
+| `502/503` 오류 | Gemini 키의 유효성, 사용량 한도, Vercel Function 로그 확인 |
+| 응답이 늦음 | 잠시 후 재시도하고, Gemini API 상태와 네트워크 확인 |
 | 배포한 화면이 이전 버전 | GitHub `main` 브랜치의 최신 커밋과 Vercel Deployment의 커밋 SHA가 같은지 확인 |
 
 ## AI 기능 입출력과 실패 처리

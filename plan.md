@@ -8,7 +8,7 @@
 
 - 프론트엔드는 프레임워크 없이 HTML, CSS, JavaScript로 구현한다.
 - 백엔드는 `api/generate_idea.py`의 Python Vercel Serverless Function으로 구현한다.
-- AI API는 백엔드에서만 호출하고 `OPENAI_API_KEY` 환경 변수를 사용한다.
+- AI API는 백엔드에서만 호출하고 `GEMINI_API_KEY` 환경 변수를 사용한다.
 - 메뉴로 이동 가능한 **소개 / 아이디어 만들기 / 이용 안내** 3개 섹션을 제공한다.
 - 폼 입력 → `fetch('/api/generate_idea')` → 결과 카드 표시 흐름을 구현한다.
 - 빈 입력, 서버 오류, 느린 응답(클라이언트 타임아웃)을 명확한 한국어 안내로 처리한다.
@@ -57,5 +57,5 @@ sparkidea/
 
 - Vercel은 저장소 루트의 정적 파일을 제공하고 `api/` 내부 Python 파일을 Serverless Function으로 인식한다.
 - Python 함수는 표준 라이브러리 HTTP 클라이언트로 AI API를 호출한다. 현재 외부 Python 패키지는 없으며, `requirements.txt`에는 이 사실과 향후 패키지 추가 원칙을 기록한다.
-- Vercel 프로젝트의 Production 환경 변수에 `OPENAI_API_KEY`를 등록한다. 키는 어떤 Git 커밋, 코드, 문서, 화면 캡처에도 기록하지 않는다.
-- 기본 모델은 환경 변수 `OPENAI_MODEL`이 없을 경우 `gpt-5-mini`로 설정한다. 필요하면 Vercel의 환경 변수로만 변경한다.
+- Vercel 프로젝트의 Production 환경 변수에 `GEMINI_API_KEY`를 등록한다. 키는 어떤 Git 커밋, 코드, 문서, 화면 캡처에도 기록하지 않는다.
+- 기본 모델은 환경 변수 `GEMINI_MODEL`이 없을 경우 `gemini-3.5-flash-lite`로 설정한다. 필요하면 Vercel의 환경 변수로만 변경한다.

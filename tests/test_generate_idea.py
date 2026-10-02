@@ -1,6 +1,6 @@
 import unittest
 
-from api.generate_idea import _normalise_idea
+from api.generate_idea import _extract_gemini_text, _normalise_idea
 
 
 class NormaliseIdeaTests(unittest.TestCase):
@@ -26,6 +26,10 @@ class NormaliseIdeaTests(unittest.TestCase):
         idea = _normalise_idea("JSON이 아닌 응답")
         self.assertTrue(idea["title"])
         self.assertGreaterEqual(len(idea["steps"]), 3)
+
+    def test_gemini_response_text_is_extracted(self):
+        response = {"candidates": [{"content": {"parts": [{"text": '{"title":"테스트"}'}]}}]}
+        self.assertEqual(_extract_gemini_text(response), '{"title":"테스트"}')
 
 
 if __name__ == "__main__":

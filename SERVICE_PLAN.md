@@ -16,7 +16,7 @@
 1. 사용자가 서비스 소개를 보고 아이디어 생성 영역으로 이동한다.
 2. 학년, 좋아하는 관심사, 해결하거나 탐색하고 싶은 주제를 입력한다.
 3. JavaScript가 입력을 검증하고 `fetch('/api/generate_idea')`로 POST 요청을 보낸다.
-4. Python Vercel Serverless Function이 환경 변수의 AI API 키로 모델을 호출한다.
+4. Python Vercel Serverless Function이 환경 변수의 Gemini API 키로 모델을 호출한다.
 5. AI 결과가 제목, 설명, 실행 단계, 확장 팁 형태로 화면에 표시된다.
 6. 사용자는 다른 조건을 입력해 다시 생성하거나, 첫 번째 실행 단계를 시작한다.
 
@@ -77,9 +77,9 @@
        ▼
 [Vercel Serverless Function]
   Python api/generate_idea.py
-       │  OPENAI_API_KEY 환경 변수 사용
+       │  GEMINI_API_KEY 환경 변수 사용
        ▼
-[AI API]
+[Gemini API]
        │  JSON 결과 반환
        ▼
 [브라우저 결과 노트]
@@ -88,11 +88,11 @@
 - HTML은 페이지의 구조와 입력 요소를 만든다.
 - CSS는 브랜드 스타일과 반응형 레이아웃을 담당한다.
 - JavaScript는 입력 검증, `fetch` 요청, 로딩·오류·AI 결과 표시를 담당한다.
-- Python 함수는 API 키를 보호한 상태로 AI API를 호출한다.
+- Python 함수는 API 키를 보호한 상태로 Gemini API를 호출한다.
 
 ## 7. 보안 및 운영 원칙
 
-- API 키는 Vercel 환경 변수 `OPENAI_API_KEY`로만 관리하며 코드·GitHub·README·스크린샷에 절대 노출하지 않는다.
+- API 키는 Vercel 환경 변수 `GEMINI_API_KEY`로만 관리하며 코드·GitHub·README·스크린샷에 절대 노출하지 않는다.
 - 모델 오류 내용이나 키 정보는 사용자에게 반환하지 않는다.
 - 요청 본문과 각 입력 필드의 최대 길이를 제한한다.
 - AI 응답은 예상한 JSON 구조로 정규화해 화면에 안전하게 텍스트로 렌더링한다.

@@ -1,8 +1,8 @@
 """Vercel Serverless Function for SparkIdea AI.
 
 The handler receives school grade, interests, and a project topic. It uses only the
-Python standard library, so Vercel can deploy it as a file-based function under /api.
-The OpenAI key is read only from the OPENAI_API_KEY environment variable.
+Python standard library and calls Gemini through the official REST API. The Gemini
+key is read only from the GEMINI_API_KEY environment variable.
 """
 
 import json
@@ -14,21 +14,25 @@ from urllib import error, request
 
 MAX_BODY_BYTES = 8_192
 FIELD_LIMITS = {"grade": 50, "interest": 120, "topic": 300}
-DEFAULT_MODEL = "gpt-5-mini"
-DEFAULT_API_BASE = "https://api.openai.com/v1"
+DEFAULT_MODEL = "gemini-3.5-flash-lite"
+GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 SYSTEM_PROMPT = """You are SparkIdea AI, a warm Korean project-idea coach for students.
 Return exactly one practical project idea that matches the user's grade, interest, and topic.
-Keep the scope small enough to begin this week. Answer ONLY valid JSON with this exact shape:
-{
-  "title": "short Korean project title",
-  "tagline": "one encouraging Korean sentence",
-  "summary": "2-3 Korean sentences explaining what to make and why it fits",
-  "steps": ["first concrete action", "second action", "third action"],
-  "tip": "one Korean expansion tip"
-}
-Use friendly Korean. Do not include markdown, a preface, or extra keys.
+Keep the scope small enough to begin this week. Use friendly Korean. Do not include markdown or a preface.
 """
+
+IDEA_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "title": {"type": "string", "description": "Short Korean project title"},
+        "tagline": {"type": "string", "description": "One encouraging Korean sentence"},
+        "summary": {"type": "string", "description": "Two or three Korean sentences explaining what to make and why it fits"},
+        "steps": {"type": "array", "items": {"type": "string"}, "description": "Three concrete Korean first steps"},
+        "tip": {"type": "string", "description": "One Korean expansion tip"},
+    },
+    "required": ["title", "tagline", "summary", "steps", "tip"],
+}
 
 
 def _clean_text(value: Any, limit: int) -> str:
@@ -76,24 +80,33 @@ def _normalise_idea(raw_content: str) -> dict[str, Any]:
     }
 
 
+def _extract_gemini_text(provider_payload: dict[str, Any]) -> str:
+    """Read the first available text part from a Gemini generateContent response."""
+    for candidate in provider_payload.get("candidates", []):
+        for part in candidate.get("content", {}).get("parts", []):
+            text = part.get("text")
+            if isinstance(text, str) and text.strip():
+                return text
+    raise ValueError("Gemini response did not include text content")
+
+
 def _request_idea(api_key: str, model: str, user_prompt: str) -> str:
-    """Call the compatible OpenAI Chat Completions endpoint with stdlib HTTP."""
-    api_base = os.environ.get("OPENAI_BASE_URL") or os.environ.get("OPENAI_API_BASE") or DEFAULT_API_BASE
-    endpoint = f"{api_base.rstrip('/')}/chat/completions"
+    """Call Gemini's generateContent REST endpoint with structured JSON output."""
+    endpoint = f"{GEMINI_API_BASE}/models/{model}:generateContent"
     payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_prompt},
-        ],
-        "response_format": {"type": "json_object"},
-        "max_completion_tokens": 1800,
+        "systemInstruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+        "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
+        "generationConfig": {
+            "responseMimeType": "application/json",
+            "responseJsonSchema": IDEA_SCHEMA,
+            "maxOutputTokens": 900,
+        },
     }
     http_request = request.Request(
         endpoint,
         data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
         headers={
-            "Authorization": f"Bearer {api_key}",
+            "x-goog-api-key": api_key,
             "Content-Type": "application/json; charset=utf-8",
         },
         method="POST",
@@ -101,7 +114,7 @@ def _request_idea(api_key: str, model: str, user_prompt: str) -> str:
     with request.urlopen(http_request, timeout=15) as response:
         provider_payload = json.loads(response.read().decode("utf-8"))
 
-    return provider_payload["choices"][0]["message"].get("content") or ""
+    return _extract_gemini_text(provider_payload)
 
 
 class handler(BaseHTTPRequestHandler):
@@ -152,7 +165,7 @@ class handler(BaseHTTPRequestHandler):
             self._send_json(400, {"error": "학년, 관심사, 주제를 모두 입력해 주세요."})
             return
 
-        api_key = os.environ.get("OPENAI_API_KEY")
+        api_key = os.environ.get("GEMINI_API_KEY")
         if not api_key:
             self._send_json(503, {"error": "AI 서비스 설정이 아직 완료되지 않았습니다. 잠시 후 다시 시도해 주세요."})
             return
@@ -164,7 +177,7 @@ class handler(BaseHTTPRequestHandler):
         )
 
         try:
-            raw_content = _request_idea(api_key, os.environ.get("OPENAI_MODEL", DEFAULT_MODEL), user_prompt)
+            raw_content = _request_idea(api_key, os.environ.get("GEMINI_MODEL", DEFAULT_MODEL), user_prompt)
             self._send_json(200, {"idea": _normalise_idea(raw_content)})
         except error.HTTPError as provider_error:
             if provider_error.code == 429:
