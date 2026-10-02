@@ -1,19 +1,21 @@
 """Vercel Serverless Function for SparkIdea AI.
 
-The handler receives school grade, interests, and a project topic. The OpenAI key is
-read only from Vercel's OPENAI_API_KEY environment variable.
+The handler receives school grade, interests, and a project topic. It uses only the
+Python standard library, so Vercel can deploy it as a file-based function under /api.
+The OpenAI key is read only from the OPENAI_API_KEY environment variable.
 """
 
 import json
 import os
+import socket
 from http.server import BaseHTTPRequestHandler
 from typing import Any
-
-from openai import APIConnectionError, APIStatusError, APITimeoutError, OpenAI
+from urllib import error, request
 
 MAX_BODY_BYTES = 8_192
 FIELD_LIMITS = {"grade": 50, "interest": 120, "topic": 300}
 DEFAULT_MODEL = "gpt-5-mini"
+DEFAULT_API_BASE = "https://api.openai.com/v1"
 
 SYSTEM_PROMPT = """You are SparkIdea AI, a warm Korean project-idea coach for students.
 Return exactly one practical project idea that matches the user's grade, interest, and topic.
@@ -72,6 +74,34 @@ def _normalise_idea(raw_content: str) -> dict[str, Any]:
         "steps": ["주제와 관련된 사진·자료를 3개 모아보기", "가장 재미있는 한 가지 질문 정하기", "30분 안에 만들 수 있는 첫 결과물 시작하기"],
         "tip": "완성도를 높이기보다 친구 한 명에게 보여 줄 수 있는 작은 버전을 먼저 만들어 보세요.",
     }
+
+
+def _request_idea(api_key: str, model: str, user_prompt: str) -> str:
+    """Call the compatible OpenAI Chat Completions endpoint with stdlib HTTP."""
+    api_base = os.environ.get("OPENAI_BASE_URL") or os.environ.get("OPENAI_API_BASE") or DEFAULT_API_BASE
+    endpoint = f"{api_base.rstrip('/')}/chat/completions"
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": user_prompt},
+        ],
+        "response_format": {"type": "json_object"},
+        "max_completion_tokens": 1800,
+    }
+    http_request = request.Request(
+        endpoint,
+        data=json.dumps(payload, ensure_ascii=False).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json; charset=utf-8",
+        },
+        method="POST",
+    )
+    with request.urlopen(http_request, timeout=15) as response:
+        provider_payload = json.loads(response.read().decode("utf-8"))
+
+    return provider_payload["choices"][0]["message"].get("content") or ""
 
 
 class handler(BaseHTTPRequestHandler):
@@ -134,30 +164,16 @@ class handler(BaseHTTPRequestHandler):
         )
 
         try:
-            client_options = {"api_key": api_key, "timeout": 15.0, "max_retries": 1}
-            compatible_base_url = os.environ.get("OPENAI_BASE_URL") or os.environ.get("OPENAI_API_BASE")
-            if compatible_base_url:
-                client_options["base_url"] = compatible_base_url
-            client = OpenAI(**client_options)
-            completion = client.chat.completions.create(
-                model=os.environ.get("OPENAI_MODEL", DEFAULT_MODEL),
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": user_prompt},
-                ],
-                response_format={"type": "json_object"},
-                max_completion_tokens=1800,
-            )
-            raw_content = completion.choices[0].message.content or ""
+            raw_content = _request_idea(api_key, os.environ.get("OPENAI_MODEL", DEFAULT_MODEL), user_prompt)
             self._send_json(200, {"idea": _normalise_idea(raw_content)})
-        except APITimeoutError:
-            self._send_json(504, {"error": "AI 응답이 늦어지고 있어요. 잠시 후 다시 시도해 주세요."})
-        except APIConnectionError:
-            self._send_json(503, {"error": "AI 서비스에 연결하지 못했어요. 잠시 후 다시 시도해 주세요."})
-        except APIStatusError as error:
-            if error.status_code == 429:
+        except error.HTTPError as provider_error:
+            if provider_error.code == 429:
                 self._send_json(429, {"error": "요청이 많아요. 잠시 후 다시 시도해 주세요."})
             else:
                 self._send_json(502, {"error": "AI 서비스에서 응답을 받지 못했어요. 잠시 후 다시 시도해 주세요."})
+        except (error.URLError, TimeoutError, socket.timeout):
+            self._send_json(503, {"error": "AI 서비스에 연결하지 못했어요. 잠시 후 다시 시도해 주세요."})
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError):
+            self._send_json(502, {"error": "AI 응답을 읽지 못했어요. 잠시 후 다시 시도해 주세요."})
         except Exception:
             self._send_json(500, {"error": "아이디어를 만드는 중 문제가 생겼어요. 잠시 후 다시 시도해 주세요."})

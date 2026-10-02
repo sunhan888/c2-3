@@ -56,6 +56,6 @@ sparkidea/
 ## 배포 결정
 
 - Vercel은 저장소 루트의 정적 파일을 제공하고 `api/` 내부 Python 파일을 Serverless Function으로 인식한다.
-- `requirements.txt`에는 `openai`만 명시한다.
+- Python 함수는 표준 라이브러리 HTTP 클라이언트로 AI API를 호출한다. 현재 외부 Python 패키지는 없으며, `requirements.txt`에는 이 사실과 향후 패키지 추가 원칙을 기록한다.
 - Vercel 프로젝트의 Production 환경 변수에 `OPENAI_API_KEY`를 등록한다. 키는 어떤 Git 커밋, 코드, 문서, 화면 캡처에도 기록하지 않는다.
 - 기본 모델은 환경 변수 `OPENAI_MODEL`이 없을 경우 `gpt-5-mini`로 설정한다. 필요하면 Vercel의 환경 변수로만 변경한다.

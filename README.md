@@ -54,11 +54,13 @@ git clone <YOUR_GITHUB_REPOSITORY_URL>
 cd sparkidea-ai
 ```
 
-### 2. Python 패키지 설치
+### 2. Python 의존성 확인
 
 ```bash
 python3 -m pip install -r requirements.txt
 ```
+
+현재 Vercel 함수는 Python 표준 라이브러리만 사용하므로 별도 패키지를 설치하지 않습니다. 이후 외부 패키지를 추가할 때는 `requirements.txt`에 고정 버전으로 기록합니다.
 
 ### 3. 환경 변수 설정
 

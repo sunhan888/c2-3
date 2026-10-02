@@ -1,1 +1,2 @@
-openai>=1.0.0,<3.0.0
+# SparkIdea AI의 Vercel 함수는 Python 표준 라이브러리만 사용합니다.
+# 외부 Python 패키지가 추가되면 이 파일에 고정 버전으로 정의하세요.
