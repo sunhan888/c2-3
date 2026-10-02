@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="학년, 관심사, 주제를 바탕으로 실행 가능한 프로젝트 아이디어를 제안하는 AI 아이디어 코치" />
+  <title>SparkIdea AI | 오늘 시작할 아이디어</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#generator">아이디어 만들기로 건너뛰기</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="SparkIdea AI 처음으로">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span>Spark<span>Idea</span></span>
+    </a>
+    <nav class="site-nav" aria-label="주요 메뉴">
+      <a href="#about">소개</a>
+      <a href="#generator">아이디어 만들기</a>
+      <a href="#guide">이용 안내</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span aria-hidden="true">✦</span> YOUR NEXT SMALL START</p>
+        <h1 id="hero-title">좋아하는 것에서,<br /><em>시작할 수 있는</em><br />아이디어까지.</h1>
+        <p class="hero-description">학년과 흥미, 떠오르는 주제를 알려 주세요. SparkIdea AI가 지금의 당신에게 맞는 작고 선명한 프로젝트 한 가지를 함께 설계합니다.</p>
+        <a class="button button-primary" href="#generator">아이디어 불씨 켜기 <span aria-hidden="true">↘</span></a>
+      </div>
+      <div class="hero-note" aria-label="아이디어 생성 예시">
+        <div class="note-pin" aria-hidden="true"></div>
+        <p class="note-index">SPARK NOTE / 01</p>
+        <p class="note-question">“게임을 좋아하는<br />중학생이라면?”</p>
+        <div class="mini-route" aria-hidden="true"><span>흥미</span><i></i><span>주제</span><i></i><span>첫 실행</span></div>
+      </div>
+      <div class="spark spark-one" aria-hidden="true">✦</div>
+      <div class="spark spark-two" aria-hidden="true">✶</div>
+    </section>
+
+    <section id="about" class="about section-shell" aria-labelledby="about-title">
+      <div class="section-intro">
+        <p class="eyebrow">WHY SPARKIDEA</p>
+        <h2 id="about-title">막연한 “좋아함”을<br />첫 번째 결과물로 바꿔요.</h2>
+      </div>
+      <div class="about-stories">
+        <article>
+          <span class="story-number">01</span>
+          <h3>나의 언어로 묻기</h3>
+          <p>정답을 고르는 대신, 현재 학년과 관심사 그리고 궁금한 주제를 직접 적습니다.</p>
+        </article>
+        <article>
+          <span class="story-number">02</span>
+          <h3>수준에 맞게 좁히기</h3>
+          <p>AI가 입력한 맥락을 바탕으로 과하지 않고 실제로 시작할 수 있는 범위를 제안합니다.</p>
+        </article>
+        <article>
+          <span class="story-number">03</span>
+          <h3>오늘 할 일 찾기</h3>
+          <p>아이디어 이름뿐 아니라 바로 해볼 첫 단계와 다음 확장 방향까지 확인할 수 있습니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="generator" class="generator section-shell" aria-labelledby="generator-title">
+      <div class="generator-heading">
+        <p class="eyebrow"><span aria-hidden="true">✦</span> IDEA LAB</p>
+        <h2 id="generator-title">나만의 재료를<br />놓아볼까요?</h2>
+        <p>세 가지 정보만 입력하면 됩니다. 완벽한 문장일 필요는 없어요.</p>
+      </div>
+
+      <div class="generator-layout">
+        <form id="idea-form" class="idea-form" novalidate>
+          <div class="field-row">
+            <label class="field" for="grade">
+              <span class="field-label"><b>01</b> 지금 학년은?</span>
+              <select id="grade" name="grade" required>
+                <option value="">선택해 주세요</option>
+                <option value="초등학생">초등학생</option>
+                <option value="중학생">중학생</option>
+                <option value="고등학생">고등학생</option>
+                <option value="대학생">대학생</option>
+                <option value="성인 학습자">성인 학습자</option>
+              </select>
+            </label>
+            <label class="field" for="interest">
+              <span class="field-label"><b>02</b> 무엇을 좋아하나요?</span>
+              <input id="interest" name="interest" type="text" maxlength="120" autocomplete="off" placeholder="예: 그림 그리기, 축구, 우주" required />
+            </label>
+          </div>
+          <label class="field field-topic" for="topic">
+            <span class="field-label"><b>03</b> 어떤 주제가 궁금한가요?</span>
+            <textarea id="topic" name="topic" maxlength="300" rows="4" placeholder="예: 우리 동네의 쓰레기 문제를 재미있게 알리고 싶어요." required></textarea>
+            <span class="field-hint">최대 300자 · 키워드만 적어도 괜찮아요.</span>
+          </label>
+          <p id="form-message" class="form-message" role="alert" aria-live="polite"></p>
+          <button id="submit-button" class="button button-dark" type="submit">
+            <span class="button-label">아이디어 만들기</span>
+            <span class="button-spark" aria-hidden="true">✦</span>
+          </button>
+        </form>
+
+        <aside class="input-prompt" aria-label="입력 팁">
+          <p class="note-index">TIP</p>
+          <p>“관심사”는 좋아하는 것,<br />“주제”는 해결해 보고 싶은<br />작은 질문으로 생각해 보세요.</p>
+          <div class="tip-example"><span>예시</span> 고등학생 / 사진 / 학교 주변의 숨은 공간 기록하기</div>
+        </aside>
+      </div>
+
+      <section id="idea-result" class="idea-result" aria-live="polite" aria-labelledby="result-title" hidden>
+        <div class="result-heading">
+          <p class="eyebrow"><span aria-hidden="true">✦</span> YOUR SPARK</p>
+          <p class="result-kicker">입력한 재료로 만든 첫 제안</p>
+        </div>
+        <div class="result-paper">
+          <p class="note-index" id="result-index">IDEA NOTE / 01</p>
+          <h3 id="result-title"></h3>
+          <p id="result-tagline" class="result-tagline"></p>
+          <p id="result-summary" class="result-summary"></p>
+          <div class="result-divider"></div>
+          <div class="result-actions">
+            <div>
+              <p class="result-label">이번 주 첫 걸음</p>
+              <ol id="result-steps" class="result-steps"></ol>
+            </div>
+            <div class="result-tip-box">
+              <p class="result-label">더 키우는 방법</p>
+              <p id="result-tip"></p>
+            </div>
+          </div>
+        </div>
+        <button id="retry-button" class="text-button" type="button">다른 재료로 다시 만들기 <span aria-hidden="true">↗</span></button>
+      </section>
+    </section>
+
+    <section id="guide" class="guide section-shell" aria-labelledby="guide-title">
+      <div class="section-intro">
+        <p class="eyebrow">HOW TO USE</p>
+        <h2 id="guide-title">생각보다<br />가볍게 시작하세요.</h2>
+      </div>
+      <div class="guide-steps">
+        <div class="guide-step"><span>1</span><div><h3>나를 입력해요</h3><p>학년, 좋아하는 것, 풀어 보고 싶은 주제를 간단히 적습니다.</p></div></div>
+        <div class="guide-step"><span>2</span><div><h3>AI의 제안을 읽어요</h3><p>아이디어의 목표와 실행 순서를 천천히 살펴보세요.</p></div></div>
+        <div class="guide-step"><span>3</span><div><h3>첫 단계만 해봐요</h3><p>모두 완성하려 하지 말고, 오늘 할 수 있는 첫 번째 행동부터 시작해요.</p></div></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">✦</span><span>Spark<span>Idea</span></span></a>
+    <p>좋아하는 것을, 시작할 수 있는 것으로.</p>
+    <p class="footer-note">AI는 발상 파트너입니다. 결과를 나만의 경험과 판단으로 다듬어 보세요.</p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

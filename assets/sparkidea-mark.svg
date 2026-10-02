@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">SparkIdea AI mark</title>
+  <desc id="desc">Orange four-point spark with a navy center on a cream square.</desc>
+  <rect width="512" height="512" rx="112" fill="#fffaf0"/>
+  <path d="M256 58c18 126 54 162 180 180-126 18-162 54-180 180-18-126-54-162-180-180 126-18 162-54 180-180Z" fill="#ff6b3d"/>
+  <circle cx="256" cy="238" r="32" fill="#17243a"/>
+  <path d="M372 98l8 22 22 8-22 8-8 22-8-22-22-8 22-8 8-22Z" fill="#ffc94a"/>
+</svg>

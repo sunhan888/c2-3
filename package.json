@@ -1,0 +1,10 @@
+{
+  "name": "sparkidea-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-powered project idea coach using vanilla HTML, CSS, JavaScript and Vercel Python Functions",
+  "scripts": {
+    "dev": "python3 dev_server.py",
+    "check": "python3 -m compileall -q api dev_server.py"
+  }
+}
