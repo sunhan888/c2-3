@@ -7,7 +7,7 @@ SparkIdea AI는 사용자가 **학년, 관심사, 주제**를 입력하면 AI가
 ## 배포 URL
 
 - **Production:** Vercel 배포 후 이곳에 URL을 기록합니다.
-- **Repository:** GitHub 연결 후 이곳에 저장소 URL을 기록합니다.
+- **Repository:** https://github.com/sunhan888/c2-3
 
 ## 주요 기능
 
